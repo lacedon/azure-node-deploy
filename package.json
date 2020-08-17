@@ -7,6 +7,9 @@
     "prepare": "npm run build",
     "build": "tsc"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lacedon/azure-node-deploy.git"
