@@ -5,10 +5,15 @@ import util from 'util';
 import { ShareServiceClient, ShareDirectoryClient, ShareClient, ShareFileClient } from '@azure/storage-file-share';
 
 import deploy, { CFile, CDir, FsFileDesc, FsDirDesc } from './deploy';
+import parsePathToArray from './utils/parse-path-to-array';
 
 const readFile = util.promisify(fs.readFile);
 
 function getServerDirClient([dirName, ...dirs]: string[], parentDirClient: ShareDirectoryClient): ShareDirectoryClient {
+  if (typeof dirName === 'undefined') {
+    return parentDirClient;
+  }
+
   const dir: ShareDirectoryClient = parentDirClient.getDirectoryClient(dirName);
   return dirs.length > 0 ? getServerDirClient(dirs, dir) : dir;
 }
@@ -30,10 +35,6 @@ async function getStorageClient(serviceClient: ShareServiceClient, storageName: 
   return serviceClient.getShareClient(shareItem.value.name);
 }
 
-function parsePathToArray(path: string): string[] {
-  return path.replace(/^\.\//, '').split('/');
-}
-
 interface Options {
   connectionString: string;
   storageName?: string;
@@ -45,7 +46,7 @@ export default async function deployShareFiles({
   connectionString,
   storageName = null,
   from = './',
-  to = './',
+  to = './site/wwwroot/',
 }: Options): Promise<void> {
   const serviceClient: ShareServiceClient = ShareServiceClient.fromConnectionString(connectionString);
   const storageClient: ShareClient = await getStorageClient(serviceClient, storageName);

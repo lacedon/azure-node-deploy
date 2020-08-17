@@ -4,6 +4,7 @@ import { BlobServiceClient, ContainerClient, BlockBlobClient } from '@azure/stor
 import mime from 'mime-types';
 
 import deploy, { CFile, CDir, FsFileDesc, FsDirDesc } from './deploy';
+import parsePathToArray from './utils/parse-path-to-array';
 
 async function getDirFiles(dirClient: ContainerClient): Promise<string[]> {
   const files: string[] = [];
@@ -13,15 +14,21 @@ async function getDirFiles(dirClient: ContainerClient): Promise<string[]> {
   return files;
 }
 
-export default function deployBlob(payload: {
+interface Options {
   connectionString: string;
   storageName?: string;
   from?: string;
   to?: string;
-}): Promise<void> {
-  const serviceClient: BlobServiceClient = BlobServiceClient.fromConnectionString(payload.connectionString);
-  const storageClient: ContainerClient = serviceClient.getContainerClient(payload.storageName);
-  const rootFSDir = payload.from;
+}
+
+export default function deployBlob({
+  connectionString,
+  storageName = '$web',
+  from = './',
+}: Options): Promise<void> {
+  const serviceClient: BlobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+  const storageClient: ContainerClient = serviceClient.getContainerClient(storageName);
+  const rootFSDir = from;
 
   return deploy<BlockBlobClient, ContainerClient>({
     rootCDir: storageClient,
