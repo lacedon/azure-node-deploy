@@ -1,5 +1,5 @@
 {
-  "name": "azure-node-deploy",
+  "name": "@lacedon/azure-node-deploy",
   "version": "0.1.2",
   "description": "A small package to work with Azure's storage container",
   "main": "dist/index.js",
