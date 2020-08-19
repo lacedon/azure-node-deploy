@@ -1,8 +1,9 @@
 {
   "name": "@lacedon/azure-node-deploy",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A small package to work with Azure's storage container",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "npm run build",
     "postinstall": "npm run build",
